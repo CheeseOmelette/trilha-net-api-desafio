@@ -6,7 +6,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddDbContext<OrganizadorContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("ConexaoPadrao")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ConexaoPadrao"), options => 
+    options.EnableRetryOnFailure(
+        maxRetryCount: 5,
+        maxRetryDelay: System.TimeSpan.FromSeconds(30),
+        errorNumbersToAdd: null
+
+
+    ))
+    
+    );
 
 builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
